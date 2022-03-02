@@ -12,42 +12,36 @@ public class Main {
 	// Print output
 
 	public static void main(String[] args) {
-		// Creates an arraylist holding an array of coordinates for N points
-		// Note format is list.get(i)[j] with i being point index and j being xyzt coordinate
-		ArrayList<double[]> list = getPoints(1);
-
-	}
-	
-	// Function to read in from points.txt and grab n number of points
-	public static ArrayList<double[]> getPoints(int n){
+		
 		// Get input file 
 		File file = new File("points.txt");
-		// Create arraylist to return
-		ArrayList<double[]> result = new ArrayList<>();
+		// Create arraylist to hold coordinates
+		ArrayList<Point4d> result = new ArrayList<>();
 		
 		try(Scanner in = new Scanner(file)){
 			// Variable to hold char from file
 			String content;
 			//variable to hold temporary list of coordinates
 			double[] list = new double[4];
-			// Counter to increment how many points we've taken in
-			int counter = 0;
+			String[] points = new String[4];
 			// Loop to grab n points from the file
-			while(counter < n) {
+			while(in.hasNext()) {
 				// Grab the next point's raw characters from the file
-				content = in.next().replaceAll("\\[|\\(|\\)|\\]", "");
+				content = in.next();
+				content = content.replaceAll("\\[|\\(|\\)|\\]", "");
+				//System.out.println(content);
 				// Split each point into individual coordinates
-				String[] points = content.split(",");
+				points = content.split(",");
 				// Parse strings into doubles to be used in the program		
 				for(int i = 0; i < points.length; i++) {
 					list[i] = Double.parseDouble(points[i]);
+					//System.out.println(list[i]);
 				}
 				// Add the resulting list to the arraylist
-				result.add(list);
-				
-				counter++;
+				result.add(new Point4d(list[0], list[1], list[2], list[3]));
+
 				for(int i = 0; i < points.length; i++) {
-					//System.out.println(list[i]);
+					//System.out.println(result.get(i));
 				}
 				//System.out.println(content + "\n");
 			}
@@ -56,9 +50,19 @@ public class Main {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return result;
+		
+		// End reading file.
+		Point4d p0 = new Point4d(result.get(2));
+		Point4d p1 = new Point4d(result.get(1));
+		
+		System.out.println(p1.equals(p0));
+		
 		
 	}
+	
+
+
+
 }
 
 
