@@ -4,6 +4,7 @@ public class Point4d{
 	double y;
 	double z;
 	double t;
+	boolean visited;
 	
 	// Default Constructor
 	Point4d(){
@@ -11,6 +12,7 @@ public class Point4d{
 		y = 0;
 		z = 0;
 		t = 0;
+		this.visited = false;
 	}
 	
 	// 4 Given values constructor
@@ -19,6 +21,15 @@ public class Point4d{
 		this.y = y;
 		this.z = z;
 		this.t = t;
+		this.visited = false;
+	}
+	
+	Point4d(double[] c){
+		this.x = c[0];
+		this.y = c[1];
+		this.z = c[2];
+		this.t = c[3];
+		this.visited = false;
 	}
 	// Copy Constructor
 	Point4d(Point4d p){
@@ -26,6 +37,7 @@ public class Point4d{
 		this.y = p.y;
 		this.z = p.z;
 		this.t = p.t;
+		this.visited = p.visited;
 	}
 	
 	public String toString() {
@@ -36,6 +48,15 @@ public class Point4d{
 		return(this.x == p.x && this.y == p.y && this.z == p.z && this.t == p.t);
 	}
 	
+	// Function to check if this point has been visited
+	boolean isVisited() {
+		return visited;
+	}
+	
+	// Set the point to visited
+	void markVisited() {
+		visited = true;
+	}
 	
 	// Finds euclidean distance between the two points
 	double findDistance(Point4d b) {	

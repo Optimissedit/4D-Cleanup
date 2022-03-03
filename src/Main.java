@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -16,7 +17,7 @@ public class Main {
 		// Get input file 
 		File file = new File("points.txt");
 		// Create arraylist to hold coordinates
-		ArrayList<Point4d> result = new ArrayList<>();
+		ArrayList<Point4d> pointList = new ArrayList<>();
 		
 		try(Scanner in = new Scanner(file)){
 			// Variable to hold char from file
@@ -38,7 +39,7 @@ public class Main {
 					//System.out.println(list[i]);
 				}
 				// Add the resulting list to the arraylist
-				result.add(new Point4d(list[0], list[1], list[2], list[3]));
+				pointList.add(new Point4d(list[0], list[1], list[2], list[3]));
 
 				for(int i = 0; i < points.length; i++) {
 					//System.out.println(result.get(i));
@@ -51,13 +52,76 @@ public class Main {
 			e.printStackTrace();
 		}
 		
-		// End reading file.
-		Point4d p0 = new Point4d(result.get(2));
-		Point4d p1 = new Point4d(result.get(1));
-		
-		System.out.println(p1.equals(p0));
+		// End reading file
 		
 		
+		/*
+		 * Create an array to store point indexes in order of visiting
+		 *  -- Final structure will also be final path --
+		 */
+		ArrayList<Integer> visited = new ArrayList<>();
+		// Variables to handle index of currently selected point, and the index of next found point
+		int selectedInt = 0;
+		int nextInt = 0;
+		double pathSum = 0;
+		//TODO: Loop until all points have been visited
+		while(visited.size() < pointList.size()) {
+			// Add current selectedIndex to visited list and mark it visited
+			pointList.get(selectedInt).markVisited();
+			visited.add(selectedInt);
+			
+			double min = Double.MAX_VALUE;
+			boolean check = false;
+			// Find next viable point with minimum distance
+			for(int j = 0; j < pointList.size(); j++) {
+				
+				Point4d a = new Point4d(pointList.get(selectedInt));
+				// Found point is less than previous, not the current int, and isn't visited already
+				if(min > a.findDistance(pointList.get(j)) && j != selectedInt && !pointList.get(j).isVisited()) {
+					//System.out.println("New Min:" + a.findDistance(pointList.get(j)));
+					min = a.findDistance(pointList.get(j));
+					nextInt = j;
+					check = true;
+				}
+			}
+			if(check) {
+				pathSum = pathSum + min;
+			}
+
+			//System.out.println("Next Index " + nextInt);
+			selectedInt = nextInt;
+		}
+		
+		System.out.println(pathSum);
+		
+		try {
+			File output = new File("output.txt");
+			if(output.createNewFile()) {
+				System.out.println("File successfully created.");
+			}
+			else {
+				// File already exists, do nothing
+			}			
+			FileWriter writer = new FileWriter(output);
+			writer.write("[");
+			for(int i = 0; i < visited.size(); i++) {
+				writer.write("(");
+				writer.write(pointList.get(visited.get(i)).toString());
+				if(i == visited.size() - 1) {
+					writer.write(")");
+				} else {
+					writer.write("), ");
+				}
+
+			}
+			writer.write("]");
+			writer.close();
+			
+		}
+		catch(IOException err) {
+			//Error handling
+			err.printStackTrace();
+		}
 	}
 	
 
